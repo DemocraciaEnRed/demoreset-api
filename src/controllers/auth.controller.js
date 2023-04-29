@@ -1,6 +1,7 @@
 import Users from "../models/User";
 import Role from "../models/Role";
 import jwt from "jsonwebtoken";
+import User from "../models/User";
 
 export const signUp = async (req, res) => {
   const {
@@ -47,4 +48,18 @@ export const signUp = async (req, res) => {
   res.status(200).json({ token })
 };
 
-export const signIn = async (req, res) => {};
+export const signIn = async (req, res) => {
+  const findUser = await User.findOne({email: req.body.email})
+
+  if(!findUser) return res.status(400).json({message: "User not found"})
+
+  const matchPassword = await User.comparePassword(req.body.password, findUser.password)
+
+  if(!matchPassword) return ress.status(401).json({token: null, message: "Invalid password"})
+
+  const token = jwt.sign({id: findUser._id}, 'SUPERSECRETO', {
+    expiresIn: 60 * 60 * 24 * 30
+  })
+
+  res.json({token})
+};
