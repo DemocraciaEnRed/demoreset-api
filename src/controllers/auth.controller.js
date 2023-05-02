@@ -55,7 +55,7 @@ export const signIn = async (req, res) => {
 
   const matchPassword = await User.comparePassword(req.body.password, findUser.password)
 
-  if(!matchPassword) return ress.status(401).json({token: null, message: "Invalid password"})
+  if(!matchPassword) return res.status(401).json({token: null, message: "Invalid password"})
 
   const token = jwt.sign({id: findUser._id}, 'SUPERSECRETO', {
     expiresIn: 60 * 60 * 24 * 30
@@ -63,3 +63,4 @@ export const signIn = async (req, res) => {
 
   res.json({token})
 };
+
