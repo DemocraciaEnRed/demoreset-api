@@ -4,15 +4,17 @@ import bcrypt from 'bcryptjs';
 const Users = new Schema({
   username: {
     type: String,
-    unique: true
+    unique: true,
+    required: true
   },
   email: {
     type: String,
-    unique: true
+    unique: true,
+    required: true,
   },
   first_name: {
     type: String,
-    required: true
+    required: true,
   },
   last_name: {
     type: String,
