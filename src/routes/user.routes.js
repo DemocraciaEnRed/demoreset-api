@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { createUser } from "../controllers/user.controller";
-import { checkRolesExisted, checkDuplicatedUsernameOrEmail } from "../middlewares";
+import { checkRolesExisted, checkDuplicatedEmail } from "../middlewares";
 const router = Router();
 
-router.post('/', [checkRolesExisted, checkDuplicatedUsernameOrEmail], createUser)
+router.post('/', [checkRolesExisted, checkDuplicatedEmail], createUser)
 
 export default router;

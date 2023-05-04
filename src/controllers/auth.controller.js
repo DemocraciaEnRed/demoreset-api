@@ -5,7 +5,6 @@ import User from "../models/User";
 
 export const signUp = async (req, res) => {
   const {
-    username,
     email,
     first_name,
     last_name,
@@ -17,7 +16,6 @@ export const signUp = async (req, res) => {
   } = req.body;
 
   const newUser = new Users({
-    username,
     email,
     first_name,
     last_name,
