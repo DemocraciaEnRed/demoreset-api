@@ -20,3 +20,17 @@ export const checkRolesExisted = (req, res, next) => {
   }
   next()
 }
+
+export const checkValidEmail = (req, res, next) =>{
+  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const testRegex = regex.test(req.body.email)
+  if(!testRegex) return res.status(400).json({message: "Email is invalid"})
+  next ()
+}
+
+export const checkValidPassword = (req, res, next) => {
+  const regex = /^[^\t\r\n\s.]{6,}$/;
+  const testRegex = regex.test(req.body.password)
+  if(!testRegex) return res.status(400).json({message: "Password is invalid"})
+  next ()
+}
