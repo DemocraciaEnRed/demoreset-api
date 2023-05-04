@@ -10,10 +10,9 @@ export const signUp = async (req, res) => {
     first_name,
     last_name,
     password,
-    img,
     organization,
     country,
-    role,
+    roles,
     active,
   } = req.body;
 
@@ -23,19 +22,18 @@ export const signUp = async (req, res) => {
     first_name,
     last_name,
     password: await Users.encryptPassword(password),
-    img,
     organization,
     country,
-    role,
+    roles,
     active,
   });
 
-  if(role) {
-    const foundRoles = await Role.find({name: { $in: role }})
-    newUser.role = foundRoles.map(r => r._id)
+  if(roles) {
+    const foundRoles = await Role.find({name: { $in: roles }})
+    newUser.roles = foundRoles.map(r => r._id)
   } else {
     const role = await Role.findOne({name: "user"})
-    newUser.role = [role._id]
+    newUser.roles = [role._id]
   }
 
   const savedUser = await newUser.save();

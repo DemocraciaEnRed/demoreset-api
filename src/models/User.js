@@ -2,11 +2,6 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const Users = new Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: true
-  },
   email: {
     type: String,
     unique: true,
@@ -24,10 +19,6 @@ const Users = new Schema({
     type: String,
     required: true
   },
-  img: {
-    type: String,
-    required: false
-  },
   organization: {
     type: String,
     required: true
@@ -36,7 +27,7 @@ const Users = new Schema({
     type: String,
     required: true
   },
-  role: [{
+  roles: [{
     type: Schema.Types.ObjectId,
     ref: "Role"
   }],
