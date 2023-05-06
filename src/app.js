@@ -15,6 +15,6 @@ app.use(express.urlencoded({ extended: true}))
 app.use(morgan("dev"));
 
 app.use('/api/auth', authRoutes)
-app.use('/api/users', usersRoutes)
+// app.use('/api/users', usersRoutes)
 
 export default app
