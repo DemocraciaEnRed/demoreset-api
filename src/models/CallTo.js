@@ -1,10 +1,11 @@
-import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 import { createDefaultDate } from '../libs/defaultCallToDate';
 
-const CallToSchema = new Schema({
+const CallToSchema = new mongoose.Schema({
     owner: {
-        type: String,
-        required: true
+        type: mongoose.Types.ObjectId,
+        ref: "Users",
+        required: true,
     },
     enabled: {
         type: Boolean,
@@ -44,9 +45,9 @@ const CallToSchema = new Schema({
         required: true,
     },
     comments: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: "CallToComments",
-        default: new Schema.Types.ObjectId()
+        default: new mongoose.Types.ObjectId()
     }]
 },
     {
@@ -54,4 +55,4 @@ const CallToSchema = new Schema({
         versionKey: false
     })
 
-export default model('CallTo', CallToSchema)
+export default mongoose.model('CallTo', CallToSchema)

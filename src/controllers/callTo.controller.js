@@ -10,13 +10,29 @@ export const getAllCallTo = async (req, res) => {
 }
 
 export const getCallToById = async (req, res) => {
-    const findCallTo = await CallTo.findById(req.params.id)
+    const findCallTo = await CallTo.findById(req.params.id).populate('comments')
         .catch(err => console.log(err))
 
     return res.status(200).json(findCallTo);
 }
 
 export const createCallTo = async (req, res) => {
+
+    const { owner, enabled, title, tags, types, location, endDate, about, content } = req.body;
+
+    const newCallTo = new CallTo({
+        owner,
+        enabled,
+        title,
+        tags,
+        types,
+        location,
+        endDate,
+        about,
+        content
+    });
+
+    newCallTo.owner = req.userId;
 
     const titleExists = await CallTo.findOne({ title: req.body.title })
         .catch(err => console.log(err));
@@ -25,9 +41,7 @@ export const createCallTo = async (req, res) => {
         return res.status(400).json({ message: "Your call title is already in use" })
     }
 
-    const callTo = new CallTo(req.body);
-
-    const savedCallTo = await callTo.save()
+    const savedCallTo = await newCallTo.save()
         .catch(err => console.log(err));
 
     return res.status(200).json(savedCallTo)
@@ -41,25 +55,29 @@ export const deleteCallToById = async (req, res) => {
 }
 
 export const updateCallTo = async (req, res) => {
+    // add comment to the call to
     if (req.body.comments) {
-        console.log(req.body.comments)
-        const { content, user, likes, replies } = req.body.comments
-        CallToComments.findOneAndUpdate(
-            { callToId: req.params.id },
-            {
-                callToId: req.params.id,
-                content,
-                user,
-                likes,
-                replies
-            },
-            { upsert: true }
-        )
-        delete req.body.comments
-    }
-    console.log(req.body);
-    const updateCallTo = await CallTo.findByIdAndUpdate(req.params.id, { ...req.body }, { new: true })
-        .catch(err => console.log(err))
+        const newComment = new CallToComments({
+            callToId: req.params.id,
+            content: req.body.comments.content,
+            user: req.userId,
+            likes: [],
+            replies: []
+        });
 
-    return res.status(200).json(updateCallTo)
+        const savedComment = await newComment.save()
+            .catch(err => console.log(err));
+
+        const findCallTo = await CallTo.findById(req.params.id)
+            .catch(err => console.log(err))
+
+        findCallTo.comments.push(savedComment._id);
+
+        const updatedCallTo = await findCallTo.save()
+            .catch(err => console.log(err));
+        
+        return res.status(200).json(updatedCallTo);
+    }
+
+    
 }

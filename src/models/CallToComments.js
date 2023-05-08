@@ -1,27 +1,24 @@
-import { Schema, model } from 'mongoose';
+import mongoose from "mongoose"
 
-const CallToCommentsSchema = new Schema({
+const CallToCommentsSchema = new mongoose.Schema({
   callToId:{
-    type: Schema.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: "CallTo",
     required: true
   },
   content: {
     type: String,
     required: true,
-    default:'asdasd'
   },
   user: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: "Users",
     required: true,
-    default: '645883523f6a0acec73fcc78'
   },
   likes: [{
-    type: Schema.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: "Users",
     required: true,
-    default: new Schema.Types.ObjectId()
   }],
   replies: [{
     content: {
@@ -30,10 +27,9 @@ const CallToCommentsSchema = new Schema({
       default: 'Comentario vacío'
     },
     user: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Types.ObjectId,
       ref: "Users",
       required: true,
-      default: '645883523f6a0acec73fcc78'
     }
   }]
 },
@@ -42,4 +38,4 @@ const CallToCommentsSchema = new Schema({
     versionKey: false
   })
 
-export default model('CallToComments', CallToCommentsSchema)
+export default mongoose.model('CallToComments', CallToCommentsSchema)
