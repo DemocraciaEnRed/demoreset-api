@@ -22,6 +22,11 @@ const Organization = new Schema({
     required: false,
     default: null,
   }
+},
+{
+  timestamps: true,
+  versionKey: false
 })
+
 
 export default model('Organization', Organization)
