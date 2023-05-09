@@ -5,7 +5,6 @@ export const getAllCallTo = async (req, res) => {
 
     const allCallTo = await CallTo.find()
         .catch(err => console.log(err))
-
     return res.status(200).json(allCallTo);
 }
 
@@ -52,7 +51,7 @@ export const deleteCallToById = async (req, res) => {
     const findCallTo = await CallTo.findByIdAndDelete(req.params.id)
         .catch(err => console.log(err))
     if (!findCallTo) return res.status(400).json({ message: "Call to not found" })
-    return res.status(202).send(findCallTo);
+    return res.status(202).json({ message: "Call to deleted successfully" });
 }
 
 export const updateCallTo = async (req, res) => {
