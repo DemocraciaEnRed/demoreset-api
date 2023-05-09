@@ -33,6 +33,7 @@ export const createCallTo = async (req, res) => {
     });
 
     newCallTo.owner = req.userId;
+    newCallTo.enabled = true;
 
     const titleExists = await CallTo.findOne({ title: req.body.title })
         .catch(err => console.log(err));
@@ -50,8 +51,8 @@ export const createCallTo = async (req, res) => {
 export const deleteCallToById = async (req, res) => {
     const findCallTo = await CallTo.findByIdAndDelete(req.params.id)
         .catch(err => console.log(err))
-        console.log(findCallTo)
-    // return res.status(202).send(findCallTo);
+    if (!findCallTo) return res.status(400).json({ message: "Call to not found" })
+    return res.status(202).send(findCallTo);
 }
 
 export const updateCallTo = async (req, res) => {
@@ -99,6 +100,14 @@ export const updateCallTo = async (req, res) => {
         const updatedCallTo = await updCall.save()
             .catch(err => console.log(err))
         return res.status(200).json({ UPDATED_CALL_TO: updatedCallTo, NEW_COMMENT: savedComment })
+    }
+
+    // update callto enabled
+    if (req.body.enabled !== undefined) {
+        updCall.enabled = !updCall.enabled;
+        const updatedCallTo = await updCall.save()
+            .catch(err => console.log(err))
+        return res.status(200).json({ message: "Call to set to enabled: " + updatedCallTo.enabled });
     }
     return res.status(200).json(updCall);
 }

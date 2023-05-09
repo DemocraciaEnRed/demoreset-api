@@ -60,3 +60,21 @@ export const signIn = async (req, res) => {
   res.json({token})
 };
 
+export const logOut = async (req, res) => {
+
+}
+
+export const signOut = async (req, res) => {
+  const authHeader = req.headers["x-access-token"]
+  console.log(authHeader);
+  console.log(req.headers);
+  jwt.sign({id: req.userId}, 'SUPERSECRETO', {expiresIn: 0}, (err, logout) => {
+    if (err) return res.status(400).json({message: "Error al cerrar sesión", err})
+    if (logout) {
+      res.json({message: "Log out"})
+    } else {
+      res.json({message: "Error al cerrar sesión"})
+    }
+  })
+}
+

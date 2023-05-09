@@ -1,4 +1,3 @@
-import CallTo from "../models/CallTo"
 import CallToComments from "../models/CallToComments"
 
 export const updateComments = async (req, res) => {
@@ -37,5 +36,3 @@ export const updateComments = async (req, res) => {
 
     return res.status(400).json({ message: "nope" })
 }
-
-// if (updCall.comments.length === 0) { return res.status(400).json('Cannot modify an unexistent comment'); }

@@ -10,7 +10,6 @@ const CallToSchema = new mongoose.Schema({
     enabled: {
         type: Boolean,
         required: true,
-        default: false
     },
     title: {
         type: String,
