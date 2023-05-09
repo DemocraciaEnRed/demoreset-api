@@ -55,29 +55,26 @@ export const deleteCallToById = async (req, res) => {
 }
 
 export const updateCallTo = async (req, res) => {
-    // add comment to the call to
-    if (req.body.comments) {
+    const updCall = await CallTo.findById(req.params.id).populate('comments')
+        .catch(err => console.log(err))
+    if (updCall === null) return res.status(400).json({ message: "Call to not found" })
+
+    if (req.body.newComment) {
         const newComment = new CallToComments({
             callToId: req.params.id,
-            content: req.body.comments.content,
+            content: req.body.newComment,
             user: req.userId,
             likes: [],
             replies: []
-        });
+        })
 
+        updCall.comments.push(newComment._id);
         const savedComment = await newComment.save()
-            .catch(err => console.log(err));
-
-        const findCallTo = await CallTo.findById(req.params.id)
             .catch(err => console.log(err))
-
-        findCallTo.comments.push(savedComment._id);
-
-        const updatedCallTo = await findCallTo.save()
-            .catch(err => console.log(err));
-        
-        return res.status(200).json(updatedCallTo);
+        const updatedCallTo = await updCall.save()
+            .catch(err => console.log(err))
+        return res.status(200).json({ UPDATED_CALL_TO: updatedCallTo, NEW_COMMENT: savedComment })
     }
 
-    
+    return res.status(200).json(updCall);
 }

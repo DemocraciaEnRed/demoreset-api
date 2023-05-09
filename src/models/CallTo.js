@@ -47,7 +47,6 @@ const CallToSchema = new mongoose.Schema({
     comments: [{
         type: mongoose.Types.ObjectId,
         ref: "CallToComments",
-        default: new mongoose.Types.ObjectId()
     }]
 },
     {
