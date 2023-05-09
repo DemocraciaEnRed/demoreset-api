@@ -110,3 +110,10 @@ export const updateCallTo = async (req, res) => {
     }
     return res.status(200).json(updCall);
 }
+
+export const deleteCommentById = async (req, res) => {
+    const deletedComment = await CallToComments.findByIdAndRemove(req.params.commentId)
+        .catch(err => console.log(err))
+    if (!deletedComment) return res.status(400).json({ message: "Comment not found" })
+    return res.status(202).json({ UPDATED_CALL_TO_MESSAGES: deletedComment, message: "Comment deleted successfully"});
+}

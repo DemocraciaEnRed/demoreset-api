@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllCallTo, getCallToById, createCallTo, deleteCallToById, updateCallTo } from "../controllers/callTo.controller"
+import { getAllCallTo, getCallToById, createCallTo, deleteCallToById, updateCallTo, deleteCommentById } from "../controllers/callTo.controller"
 import { updateComments } from "../controllers/callToComments.controller";
 import { isAdmin, verifyToken } from "../middlewares/authJwt";
 import { enablePermission } from "../middlewares/vertifyUpdateContent";
@@ -13,6 +13,7 @@ router.post('/', verifyToken, createCallTo)
 router.put('/:callId/:commentId', verifyToken, updateComments)
 router.put('/:id', [verifyToken, enablePermission], updateCallTo)
 router.delete('/:id', [verifyToken, isAdmin], deleteCallToById)
+router.delete('/:callId/:commentId', [verifyToken, isAdmin], deleteCommentById)
 
 // router.post('/:id', verifyToken, newCallToComment)
 export default router;
