@@ -48,10 +48,10 @@ export const createCallTo = async (req, res) => {
 }
 
 export const deleteCallToById = async (req, res) => {
-    const findCallTo = await CallTo.findByIdAndRemove(req.params.id)
+    const findCallTo = await CallTo.findByIdAndDelete(req.params.id)
         .catch(err => console.log(err))
-
-    return res.status(202).json(findCallTo);
+        console.log(findCallTo)
+    // return res.status(202).send(findCallTo);
 }
 
 export const updateCallTo = async (req, res) => {
@@ -59,6 +59,31 @@ export const updateCallTo = async (req, res) => {
         .catch(err => console.log(err))
     if (updCall === null) return res.status(400).json({ message: "Call to not found" })
 
+    // update callto title
+    if (req.body.newTitle) {
+        updCall.title = req.body.newTitle;
+        const updatedCallTo = await updCall.save()
+            .catch(err => console.log(err))
+        return res.status(200).json({ message: "Call to field content updated: " + updatedCallTo.title });
+    }
+
+    // update callto content
+    if (req.body.newContent) {
+        updCall.content = req.body.newContent;
+        const updatedCallTo = await updCall.save()
+            .catch(err => console.log(err))
+        return res.status(200).json({ message: "Call to field content updated: " + updatedCallTo.content });
+    }
+
+    // update callto about
+    if (req.body.newAbout) {
+        updCall.about = req.body.newAbout;
+        const updatedCallTo = await updCall.save()
+            .catch(err => console.log(err))
+        return res.status(200).json({ message: "Call to field about updated: " + updatedCallTo.about });
+    }
+
+    // update callto comments
     if (req.body.newComment) {
         const newComment = new CallToComments({
             callToId: req.params.id,
@@ -75,6 +100,5 @@ export const updateCallTo = async (req, res) => {
             .catch(err => console.log(err))
         return res.status(200).json({ UPDATED_CALL_TO: updatedCallTo, NEW_COMMENT: savedComment })
     }
-
     return res.status(200).json(updCall);
 }

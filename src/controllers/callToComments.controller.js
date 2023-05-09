@@ -28,6 +28,13 @@ export const updateComments = async (req, res) => {
         return res.status(200).json({ message: "like added:  " + savedLike.likes })
     }
 
+    // update content
+    if (req.body.newMsgContent) {
+        comment.content = req.body.newMsgContent
+        const savedComment = await comment.save().catch(console.log('error'))
+        return res.status(200).json({ message: "comment updated:  " + savedComment.content })
+    }
+
     return res.status(400).json({ message: "nope" })
 }
 

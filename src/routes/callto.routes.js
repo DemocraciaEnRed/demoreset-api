@@ -13,7 +13,6 @@ router.post('/', verifyToken, createCallTo)
 router.put('/:callId/:commentId', verifyToken, updateComments)
 router.put('/:id', [verifyToken, enablePermission], updateCallTo)
 router.delete('/:id', [verifyToken, isAdmin], deleteCallToById)
-// call to comments & likes
 
 // router.post('/:id', verifyToken, newCallToComment)
 export default router;
