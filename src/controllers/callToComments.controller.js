@@ -6,6 +6,23 @@ export const updateComments = async (req, res) => {
 
     if (!comment) { return res.status(400).json({ error: 'Comment not found' }) }
 
+    if(req.body.newReply) {
+        const newReply = {
+            content: req.body.newReply,
+            user: req.userId,
+            likes: []
+        }
+
+        try {
+            comment.replies.push(newReply)
+            const savedReply = await comment.save()
+            return res.status(200).json({ message: "reply added:" , UPDATED_CALLTO_COMMENTS_REPLY: savedReply.replies })
+        }
+        catch {
+            return res.status(400).json({ error: 'error' })
+        }
+    }
+
     if (req.body.newLike) {
         if (comment.$isEmpty('likes')) { //mongoose fn
             comment.likes.push(req.userId)
