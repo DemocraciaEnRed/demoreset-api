@@ -22,12 +22,13 @@ export const verifyToken = async (req, res, next) => {
 }
 
 export const isAdmin = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.userId)
-    const roles = await Role.find({ _id: { $in: user.roles } })
-    const admin = roles.some(role => role.name === "admin")
-    admin ? next() : res.status(403).json({ message: "You are not admin." })
-  } catch (error) {
-    console.log(error);
+  const user = await User.findById(req.userId)
+  const roles = await Role.find({_id: {$in: user.roles}})
+
+  for (let i = 0; i < roles.length; i++) {
+    if (roles[i].name === "admin") {
+      return next()
+    }
   }
+  return res.status(403).json({message: "You are not admin"})
 }

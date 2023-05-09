@@ -26,7 +26,7 @@ export const createCallTo = async (req, res) => {
         tags,
         types,
         location,
-        endDate,
+        endDate,  //default en model a 6 meses desde su creacion
         about,
         content
     });
@@ -48,6 +48,7 @@ export const createCallTo = async (req, res) => {
 }
 
 export const deleteCallToById = async (req, res) => {
+    console.log(req.userId);
     const findCallTo = await CallTo.findByIdAndDelete(req.params.id)
         .catch(err => console.log(err))
     if (!findCallTo) return res.status(400).json({ message: "Call to not found" })
@@ -64,7 +65,7 @@ export const updateCallTo = async (req, res) => {
         updCall.title = req.body.newTitle;
         const updatedCallTo = await updCall.save()
             .catch(err => console.log(err))
-        return res.status(200).json({ message: "Call to field content updated: " + updatedCallTo.title });
+        return res.status(200).json({ message: "Call to field title updated: " + updatedCallTo.title });
     }
 
     // update callto content
@@ -103,17 +104,12 @@ export const updateCallTo = async (req, res) => {
 
     // update callto enabled
     if (req.body.enabled !== undefined) {
-        updCall.enabled = !updCall.enabled;
-        const updatedCallTo = await updCall.save()
-            .catch(err => console.log(err))
-        return res.status(200).json({ message: "Call to set to enabled: " + updatedCallTo.enabled });
+        try {
+            updCall.enabled = !updCall.enabled;
+            const updatedCallTo = await updCall.save()
+            return res.status(200).json({ message: "Call to set to enabled: " + updatedCallTo.enabled });
+        } catch (error) {
+            return res.status(400).json({ message: "Call to field enabled not updated", error })
+        }
     }
-    return res.status(200).json(updCall);
-}
-
-export const deleteCommentById = async (req, res) => {
-    const deletedComment = await CallToComments.findByIdAndRemove(req.params.commentId)
-        .catch(err => console.log(err))
-    if (!deletedComment) return res.status(400).json({ message: "Comment not found" })
-    return res.status(202).json({ UPDATED_CALL_TO_MESSAGES: deletedComment, message: "Comment deleted successfully"});
 }
