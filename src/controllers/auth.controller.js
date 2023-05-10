@@ -36,7 +36,7 @@ export const signUp = async (req, res) => {
 
   const savedUser = await newUser.save();
 
-  const token = jwt.sign({id: savedUser._id}, 'SUPERSECRETO', {
+  const token = jwt.sign({id: savedUser._id}, process.env.JWT_SECRET, {
     expiresIn: 60 * 60 * 24 * 30
   })
 
@@ -53,7 +53,7 @@ export const signIn = async (req, res) => {
 
   if(!matchPassword) return res.status(401).json({token: null, message: "Invalid password"})
 
-  const token = jwt.sign({id: findUser._id}, 'SUPERSECRETO', {
+  const token = jwt.sign({id: findUser._id}, process.env.JWT_SECRET, {
     expiresIn: 60 * 60 * 24 * 30
   })
 
@@ -68,7 +68,7 @@ export const signOut = async (req, res) => {
   const authHeader = req.headers["x-access-token"]
   console.log(authHeader);
   console.log(req.headers);
-  jwt.sign({id: req.userId}, 'SUPERSECRETO', {expiresIn: 0}, (err, logout) => {
+  jwt.sign({id: req.userId}, process.env.JWT_SECRET, {expiresIn: 0}, (err, logout) => {
     if (err) return res.status(400).json({message: "Error al cerrar sesión", err})
     if (logout) {
       res.json({message: "Log out"})

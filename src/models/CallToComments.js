@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const CallToCommentsSchema = new mongoose.Schema({
-  callToId:{
+  callTo:{
     type: mongoose.Schema.Types.ObjectId,
     ref: "CallTo",
     required: true
@@ -22,17 +22,10 @@ const CallToCommentsSchema = new mongoose.Schema({
     default:[null]
   }],
   replies: [{
-    content: {
-      type: String,
-      required: true,
-      default: 'Comentario vacío'
-    }, 
-    user: {
-      type: mongoose.Types.ObjectId,
-      ref: "Users",
-      required: true,
-      default: null
-    }
+    type: mongoose.Types.ObjectId,
+    ref: "Reply",
+    required: true,
+    default:[null]
   }]
 },
   {
@@ -41,3 +34,23 @@ const CallToCommentsSchema = new mongoose.Schema({
   })
 
 export default mongoose.model('CallToComments', CallToCommentsSchema)
+
+/**
+ * Example of how replies look in the database without ref
+ * 
+ * replies: ['lala01', 'lala02']
+ * 
+ * replies: [
+ * {
+ * content: 'Comentario vacío',
+ * user: 'user01'
+ * id: 'lala01',
+ * },
+ * {
+ * content: 'Comentario vacío',
+ * user: 'user01'
+ * id: 'lala02',
+ * },
+ * ]
+ * 
+ */

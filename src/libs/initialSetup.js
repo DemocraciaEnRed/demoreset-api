@@ -9,8 +9,9 @@ export const createRoles = async () => {
       new Role({ name: 'user' }).save(),
       new Role({ name: 'admin' }).save()
     ])
-
+    console.log('Initial roles created:')
     console.log(values)
+    console.log('---> Roles created')
   } catch (error) {
     console.error(error)
   }
