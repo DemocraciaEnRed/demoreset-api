@@ -3,8 +3,9 @@ import Role from "../models/Role.js"
 
 export const createUser = async (req, res) => {
   try {
-    const { email, first_name, last_name, password, organization, country } = req.body
-    const rolesFound = await Role.find({ name: { $in: "user" } })
+    const { email, first_name, last_name, password, organization, country, roles} = req.body
+    // can pass an array with those roles (user and admin)
+    const rolesFound = await Role.find({ name: { $in: roles } })
     // creating a new User
     const user = new User({
       email,
@@ -54,40 +55,4 @@ export const deleteUserById = async (req, res) => {
     message: "User deleted successfully",
     DELETED_USER: userId
   });
-}
-
-export const createAdmin = async (req, res) => {
-  try {
-    const { email, first_name, last_name, password, organization, country } = req.body
-    const rolesFound = await Role.find({ name: { $in: "admin" } })
-    // creating a new User
-    const user = new User({
-      email,
-      first_name,
-      last_name,
-      password,
-      organization,
-      country,
-      roles: rolesFound.map(role => role._id),
-      active: true
-    })
-
-    // encrypting password
-    user.password = await User.encryptPassword(user.password)
-    // saving the new user
-    const savedUser = await user.save()
-
-    return res.status(200).json({
-      _id: savedUser._id,
-      email: savedUser.email,
-      first_name: savedUser.first_name,
-      last_name: savedUser.last_name,
-      organization: savedUser.organization,
-      country: savedUser.country,
-      roles: savedUser.roles,
-      active: savedUser.active
-    })
-  } catch (error) {
-    console.error(error)
-  }
 }
