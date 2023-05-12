@@ -19,13 +19,11 @@ const CallToCommentsSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "Users",
     required: true,
-    default:[null]
   }],
   replies: [{
     type: mongoose.Types.ObjectId,
     ref: "Reply",
     required: true,
-    default:[null]
   }]
 },
   {

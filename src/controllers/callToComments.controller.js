@@ -1,6 +1,40 @@
 import CallTo from "../models/CallTo"
 import CallToComments from "../models/CallToComments"
 
+export const newCallToComment = async (req, res) => {
+    try {
+        // create a comment in the call to 
+        const { callId } = req.params
+        const { content } = req.body
+        // check that CallTo exists
+        const callTo = await CallTo.findById(callId)
+        if (!callTo) { return res.status(404).json({ error: 'CallTo not found' }) }
+
+        // create a new comment
+        const newComment = new CallToComments({
+            callTo: callId,
+            content: content,
+            user: req.userId,
+            likes: [],
+            replies: []
+        })
+        // save the comment
+        const savedComment = await newComment.save()
+            .catch(err => console.log(err))
+
+        // add the comment to the callTo
+        callTo.comments.push(savedComment._id)
+        
+        const updatedCallTo = await callTo.save()
+            .catch(err => console.log(err))
+
+        return res.status(200).json({ UPDATED_CALL_TO: updatedCallTo, NEW_COMMENT: savedComment })
+    } 
+    catch (error) {
+        return res.status(400).json({ message: "Error while creating the comment", error })
+    }
+}
+
 export const updateComment = async (req, res) => {
     const { callId, commentId } = req.params
     // check that CallTo exists

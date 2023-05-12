@@ -15,6 +15,10 @@ const Reply = new mongoose.Schema({
     ref: "CallToComments",
     required: true,
   }
+},
+{
+  timestamps: true,
+  versionKey: false
 })
 
 export default mongoose.model('Reply', Reply)

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getAllCallTo, getCallToById, createCallTo, deleteCallToById, updateCallTo } from "../controllers/callTo.controller"
-import { updateComment, deleteComment } from "../controllers/callToComments.controller";
+import { updateComment, deleteComment, newCallToComment } from "../controllers/callToComments.controller";
 import { isAdmin, verifyToken } from "../middlewares/authJwt";
 const router = Router();
 
@@ -12,9 +12,7 @@ router.get('/:id', getCallToById)
 router.put('/:id', [verifyToken], updateCallTo)
 
 router.delete('/:id', [verifyToken, isAdmin], deleteCallToById)
-// TODO
-// POST create a comment to a call to
-// router.post('/:callId/comment', verifyToken, newCallToComment)
+router.post('/:callId/comment', verifyToken, newCallToComment)
 router.put('/:callId/comment/:commentId', [verifyToken], updateComment)
 router.delete('/:callId/comment/:commentId', [verifyToken], deleteComment)
 // TODO
