@@ -1,5 +1,6 @@
 import CallTo from "../models/CallTo"
 import CallToComments from "../models/CallToComments"
+import Reply from "../models/Reply"
 
 export const newCallToComment = async (req, res) => {
     try {
@@ -86,22 +87,28 @@ export const deleteComment = async (req, res) => {
         }
     }
 
-    // delete the comment
+    
     try {
-        // get all the replies of the comment
-        const replies = commentCallTo.replies
-        // delete the comment
-        await commentCallTo.delete()
-        // delete all the replies
-        for (let i = 0; i < replies.length; i++) {
-            await replies[i].delete()
+        // delete the replies of the comment
+        if (commentCallTo.replies.length > 0) {
+            commentCallTo.replies.forEach(async reply => {
+                const deletedReply = await Reply.findByIdAndDelete(reply._id)
+                console.log(deletedReply)
+            })
         }
-        return res.status(200).json({ message: "comment deleted" })
+
+        // delete the comment from the callTo
+        const index = callTo.comments.indexOf(commentCallTo._id)
+        if (index > -1) { callTo.comments.splice(index, 1) }
+        await callTo.save()
+
+        // delete the comment
+        const deletedComment = await CallToComments.findByIdAndDelete(commentCallTo)
+        return res.status(200).json({ message: "comment deleted", DELETED_CALLTO_COMMENTS: deletedComment })
     } catch {
         return res.status(400).json({ error: 'error while deleting the comment' })
     }
 }
-
 
 // export const updateComment = async (req, res) => {
 //     const { commentId } = req.params
