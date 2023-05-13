@@ -1,5 +1,6 @@
 import User from "../models/User.js"
 import Role from "../models/Role.js"
+import jwt from "jsonwebtoken";
 
 export const createUser = async (req, res) => {
   try {
@@ -38,14 +39,20 @@ export const createUser = async (req, res) => {
   }
 }
 
+export const getMyProfile = async (req, res) => {
+  const user = await User.findById(req.userId, { password: 0, active: 0, createdAt: 0, updatedAt: 0, roles: 0 })
+  if (!user) return res.status(404).json({ message: "No user found" });
+  return res.status(200).json(user);
+}
+
 export const getUsers = async (req, res) => {
   const users = await User.find()
-  return res.json(users);
+  return res.status(200).json(users);
 }
 
 export const getUserById = async (req, res) => {
   const user = await User.findById(req.params.userId)
-  return res.json(user);
+  return res.status(200).json(user);
 }
 
 export const deleteUserById = async (req, res) => {
