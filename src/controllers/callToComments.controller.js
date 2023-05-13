@@ -110,6 +110,36 @@ export const deleteComment = async (req, res) => {
     }
 }
 
+export const newReply = async (req, res) => {
+    const { callId, commentId } = req.params
+    const { content } = req.body
+    // check that CallTo exists
+    const callTo = await CallTo.findById(callId)
+    if (!callTo) { return res.status(404).json({ error: 'CallTo not found' }) }
+
+    // check that comment exists
+    const commentCallTo = await CallToComments.findById(commentId)
+    if (!commentCallTo) { return res.status(404).json({ error: 'Comment not found' }) }
+
+    // create a new reply
+    const newReply = new Reply({
+        content: content,
+        user: req.userId,
+        comment: commentId
+    })
+
+    // save the reply
+    const savedReply = await newReply.save()
+        .catch(err => console.log(err))
+
+    // add the reply to the comment
+    commentCallTo.replies.push(savedReply._id)
+    const updatedComment = await commentCallTo.save()
+        .catch(err => console.log(err))
+
+    return res.status(200).json({ UPDATED_CALLTO_COMMENTS_REPLY: updatedComment.replies, NEW_REPLY: savedReply })
+}
+
 // export const updateComment = async (req, res) => {
 //     const { commentId } = req.params
 //     const comment = await CallToComments.findById(commentId)
