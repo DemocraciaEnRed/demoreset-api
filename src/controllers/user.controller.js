@@ -1,6 +1,5 @@
 import User from "../models/User.js"
 import Role from "../models/Role.js"
-import jwt from "jsonwebtoken";
 
 export const createUser = async (req, res) => {
   try {
