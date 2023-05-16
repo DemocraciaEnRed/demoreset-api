@@ -1,5 +1,6 @@
 import CallTo from "../models/CallTo"
 import CallToComments from "../models/CallToComments";
+import Users from "../models/User"
 
 export const getAllCallTo = async (req, res) => {
 
@@ -9,9 +10,23 @@ export const getAllCallTo = async (req, res) => {
 }
 
 export const getCallToById = async (req, res) => {
-    const findCallTo = await CallTo.findById(req.params.id).populate('comments')
+    const findCallTo = await CallTo.findById(req.params.id)
+        .populate({
+            path: 'comments',
+            populate: [{
+                path: 'replies',
+                model: 'Reply',
+                populate: {
+                    path: 'user',
+                    model: 'Users'
+                }
+            }, {
+                path: 'user',
+                model: 'Users'
+            }]
+        })
         .catch(err => console.log(err))
-
+    console.log(findCallTo);
     return res.status(200).json(findCallTo);
 }
 
