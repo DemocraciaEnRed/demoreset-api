@@ -1,6 +1,7 @@
 import CallTo from "../models/CallTo"
 import CallToComments from "../models/CallToComments"
 import Reply from "../models/Reply"
+import User from "../models/User"
 
 export const newCallToComment = async (req, res) => {
     try {
@@ -68,6 +69,39 @@ export const updateComment = async (req, res) => {
     }
 }
 
+export const newLike = async (req, res) => {
+    console.log(req.userId)
+    const { callId, commentId } = req.params
+    // check that CallTo exists
+    const callTo = await CallTo.findById(callId)
+    if (!callTo) { return res.status(404).json({ error: 'CallTo not found' }) }
+
+    // check that comment exists
+    const commentCallTo = await CallToComments.findById(commentId).populate('replies')
+    if (!commentCallTo) { return res.status(404).json({ error: 'Comment not found' }) }
+
+    // add the like to the comment
+    try {
+        // check if the user already liked the comment
+        const user = await User.findById(req.userId)
+        if (commentCallTo.likes.includes(user._id)) {
+            // remove the like
+            const index = commentCallTo.likes.indexOf(user._id)
+            if (index > -1) { commentCallTo.likes.splice(index, 1) }
+            const savedComment = await commentCallTo.save()
+            return res.status(200).json({ message: "like removed", UPDATED_CALLTO_COMMENTS: savedComment })
+        }
+        commentCallTo.likes.push(user._id)
+        const savedComment = await commentCallTo.save()
+        return res.status(200).json({ message: "like added", UPDATED_CALLTO_COMMENTS: savedComment })
+    }
+    catch (error) {
+        return res.status(400).json({ message: "Error while liking the comment", error })
+    }
+
+}
+
+
 export const deleteComment = async (req, res) => {
     const { callId, commentId } = req.params
     // check that CallTo exists
@@ -86,7 +120,6 @@ export const deleteComment = async (req, res) => {
             return res.status(403).json({ message: "You are not admin or owner of the content." })
         }
     }
-
 
     try {
         // delete the replies of the comment
