@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getAllCallTo, getCallToById, createCallTo, deleteCallToById, updateCallTo } from "../controllers/callTo.controller"
-import { updateComment, deleteComment, newCallToComment, newLike } from "../controllers/callToComments.controller";
+import { updateComment, deleteComment, newCallToComment, newLike, getLikesFromComment, getCommentById } from "../controllers/callToComments.controller";
 import { isAdmin, verifyToken } from "../middlewares/authJwt";
 import { deleteReply, newReply, updateReply } from "../controllers/replies.controller";
 const router = Router();
@@ -14,7 +14,9 @@ router.put('/:id', verifyToken, updateCallTo)
 router.delete('/:id', [verifyToken, isAdmin], deleteCallToById)
 
 router.post('/:callId/comment', verifyToken, newCallToComment)
+router.get('/:callId/comment/:commentId', getCommentById)
 router.put('/:callId/comment/:commentId', verifyToken, updateComment)
+router.get('/:callId/comment/:commentId/like', getLikesFromComment)
 router.post('/:callId/comment/:commentId/like', verifyToken, newLike)
 router.delete('/:callId/comment/:commentId', verifyToken, deleteComment)
 

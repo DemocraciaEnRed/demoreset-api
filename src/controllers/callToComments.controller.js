@@ -3,6 +3,30 @@ import CallToComments from "../models/CallToComments"
 import Reply from "../models/Reply"
 import User from "../models/User"
 
+export const getCommentById = async (req, res) => {
+    const comment = await CallToComments.findById(req.params.commentId)
+        .populate([{
+            path: 'replies',
+            model: 'Reply',
+            populate: {
+                path: 'user',
+                select: '-password',
+                model: 'Users'
+            }
+        },
+        {
+            path: 'user',
+            select: '-password',
+            model: 'Users'
+        }])
+        .catch(err => {
+            console.log(err)
+            return res.status(404).json({ message: 'Comment not found' })
+        })
+
+    return res.status(200).json(comment)
+}
+
 export const newCallToComment = async (req, res) => {
     try {
         // create a comment in the call to 
@@ -69,8 +93,13 @@ export const updateComment = async (req, res) => {
     }
 }
 
+export const getLikesFromComment = async (req, res) => {
+    const { commentId } = req.params
+    const comment = await CallToComments.findById(commentId)
+    return res.status(200).json({ likes: comment.likes })
+}
+
 export const newLike = async (req, res) => {
-    console.log(req.userId)
     const { callId, commentId } = req.params
     // check that CallTo exists
     const callTo = await CallTo.findById(callId)
@@ -100,7 +129,6 @@ export const newLike = async (req, res) => {
     }
 
 }
-
 
 export const deleteComment = async (req, res) => {
     const { callId, commentId } = req.params
