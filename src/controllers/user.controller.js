@@ -3,7 +3,7 @@ import Role from "../models/Role.js"
 
 export const createUser = async (req, res) => {
   try {
-    const { email, first_name, last_name, password, organization, country, roles} = req.body
+    const { email, first_name, last_name, password, organization, country, roles } = req.body
     // can pass an array with those roles (user and admin)
     const rolesFound = await Role.find({ name: { $in: roles } })
     // creating a new User
@@ -39,7 +39,8 @@ export const createUser = async (req, res) => {
 }
 
 export const getMyProfile = async (req, res) => {
-  const user = await User.findById(req.userId, { password: 0, active: 0, createdAt: 0, updatedAt: 0, roles: 0 })
+  const user = await User.findById(req.userId, { password: 0, active: 0, createdAt: 0, updatedAt: 0 }).populate("roles")
+  console.log(user.roles[0].name);
   if (!user) return res.status(404).json({ message: "No user found" });
   return res.status(200).json(user);
 }
