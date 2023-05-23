@@ -26,14 +26,17 @@ const CallToSchema = new mongoose.Schema({
         default: [],
     },
     location: {
-        type: [String],
+        type: String,
         required: true,
-        default: [],
     },
     endDate: {
         type: Date,
         required: true,
         default: createDefaultDate()
+    },
+    country: {
+        type: String,
+        required: true,
     },
     about: {
         type: String,

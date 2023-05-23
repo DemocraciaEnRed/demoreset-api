@@ -32,7 +32,7 @@ export const getCallToById = async (req, res) => {
 
 export const createCallTo = async (req, res) => {
 
-    const { owner, enabled, title, tags, types, location, endDate, about, content } = req.body;
+    const { owner, enabled, title, tags, types, location, endDate, about, content, country } = req.body;
 
     const newCallTo = new CallTo({
         owner,
@@ -41,6 +41,7 @@ export const createCallTo = async (req, res) => {
         tags,
         types,
         location,
+        country,
         endDate,  //default en model a 6 meses desde su creacion
         about,
         content
@@ -103,6 +104,13 @@ export const updateCallTo = async (req, res) => {
             const updatedCallTo = await updCall.save()
                 .catch(err => console.log(err))
             return res.status(200).json({ message: "Call to field title updated: " + updatedCallTo.title });
+        }
+
+        if (req.body.country) {
+            updCall.country = req.body.country;
+            const updatedCallTo = await updCall.save()
+                .catch(err => console.log(err))
+            return res.status(200).json({ message: "Call to field country updated: " + updatedCallTo.country });
         }
 
         // update callto content
