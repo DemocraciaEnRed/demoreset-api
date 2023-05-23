@@ -2,9 +2,10 @@ import Users from "../models/User";
 import Role from "../models/Role";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import Organization from "../models/Organization";
 
 export const signUp = async (req, res) => {
-  const {
+  let {
     email,
     first_name,
     last_name,
@@ -14,6 +15,27 @@ export const signUp = async (req, res) => {
     roles,
     active,
   } = req.body;
+
+  
+  let newOrganization = null
+
+  if(organization.directusId) {
+    const foundOrganization = await Organization.findOne({directusId: organization.directusId})
+    if(foundOrganization) {
+      console.log(foundOrganization._id)
+      organization = foundOrganization._id
+    } else {
+      newOrganization = new Organization({
+        directusId: organization.directusId,
+        name: organization.name,
+        country_en: organization.country_en,
+        country_es: organization.country_es,
+        logoUrl: organization.logoUrl,
+      });
+      const savedOrganization = await newOrganization.save();
+      organization = savedOrganization._id
+    }
+  }
 
   const newUser = new Users({
     email,

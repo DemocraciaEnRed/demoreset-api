@@ -5,22 +5,21 @@ const Organization = new Schema({
     type: String,
     required: true,
   },
-  name_es: {
+  name: {
     type: String,
     required: true,
   },
-  name_en: {
+  country_en: {
     type: String,
     required: true,
   },
-  hub: {
+  country_es: {
     type: String,
-    required: false,
+    required: true,
   },
   logoUrl: {
     type: String,
-    required: false,
-    default: null,
+    required: true,
   }
 },
 {

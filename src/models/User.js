@@ -20,8 +20,8 @@ const Users = new Schema({
     required: true
   },
   organization: {
-    type: String,
-    required: true
+    type: Schema.Types.ObjectId,
+    ref: "Organization"
   },
   country: {
     type: String,
