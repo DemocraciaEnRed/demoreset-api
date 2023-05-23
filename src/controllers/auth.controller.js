@@ -16,57 +16,60 @@ export const signUp = async (req, res) => {
     active,
   } = req.body;
 
-  
-  let newOrganization = null
+  try {
+    let newOrganization = null
 
-  if(organization.directusId) {
-    const foundOrganization = await Organization.findOne({directusId: organization.directusId})
-    if(foundOrganization) {
-      console.log(foundOrganization._id)
-      organization = foundOrganization._id
-    } else {
-      newOrganization = new Organization({
-        directusId: organization.directusId,
-        name: organization.name,
-        country_en: organization.country_en,
-        country_es: organization.country_es,
-        logoUrl: organization.logoUrl,
-      });
-      const savedOrganization = await newOrganization.save();
-      organization = savedOrganization._id
+    if(organization.directusId) {
+      const foundOrganization = await Organization.findOne({directusId: organization.directusId})
+      if(foundOrganization) {
+        organization = foundOrganization._id
+      } else {
+        newOrganization = new Organization({
+          directusId: organization.directusId,
+          name: organization.name,
+          country_en: organization.country_en,
+          country_es: organization.country_es,
+          logoUrl: organization.logoUrl,
+        });
+        const savedOrganization = await newOrganization.save();
+        organization = savedOrganization._id
+      }
     }
+  
+    const newUser = new Users({
+      email,
+      first_name,
+      last_name,
+      password: await Users.encryptPassword(password),
+      organization,
+      country,
+      roles,
+      active,
+    });
+  
+    if(roles) {
+      const foundRoles = await Role.find({name: { $in: roles }})
+      newUser.roles = foundRoles.map(r => r._id)
+    } else {
+      const role = await Role.findOne({name: "user"})
+      newUser.roles = [role._id]
+    }
+  
+    const savedUser = await newUser.save();
+  
+    const token = jwt.sign({id: savedUser._id}, process.env.JWT_SECRET, {
+      expiresIn: 60 * 60 * 24 * 30
+    })
+  
+    res.status(200).json({ token })
+  } 
+  catch (error) {
+    console.log(error)
+    res.status(500).json({message: "Error al crear el usuario", error})
   }
-
-  const newUser = new Users({
-    email,
-    first_name,
-    last_name,
-    password: await Users.encryptPassword(password),
-    organization,
-    country,
-    roles,
-    active,
-  });
-
-  if(roles) {
-    const foundRoles = await Role.find({name: { $in: roles }})
-    newUser.roles = foundRoles.map(r => r._id)
-  } else {
-    const role = await Role.findOne({name: "user"})
-    newUser.roles = [role._id]
-  }
-
-  const savedUser = await newUser.save();
-
-  const token = jwt.sign({id: savedUser._id}, process.env.JWT_SECRET, {
-    expiresIn: 60 * 60 * 24 * 30
-  })
-
-  res.status(200).json({ token })
 };
 
 export const signIn = async (req, res) => {
-  
   const findUser = await User.findOne({email: req.body.email}).catch(err => console.log(err))
 
   if(!findUser) return res.status(401).json({message: "Invalid email or password"})
@@ -81,10 +84,6 @@ export const signIn = async (req, res) => {
 
   res.json({token})
 };
-
-export const logOut = async (req, res) => {
-
-}
 
 export const signOut = async (req, res) => {
   const authHeader = req.headers["x-access-token"]

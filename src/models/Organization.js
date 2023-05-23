@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const Organization = new Schema({
   directusId: {
-    type: String,
+    type: Number,
     required: true,
   },
   name: {

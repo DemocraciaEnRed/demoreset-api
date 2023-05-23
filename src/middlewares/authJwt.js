@@ -15,8 +15,7 @@ export const verifyToken = async (req, res, next) => {
     req.userId = decoded.id
 
     const user = await User.findById(req.userId, { password: 0 }).populate('roles')
-    if (!user) return res.status(404).json({ message: "No user found" });
-    
+    if (!user) return res.status(404).json({ message: "No user found" }); 
     req.user = user
     next()
   }
