@@ -30,6 +30,7 @@ export const signUp = async (req, res) => {
           country_en: organization.country_en,
           country_es: organization.country_es,
           logoUrl: organization.logoUrl,
+          web: organization.web
         });
         const savedOrganization = await newOrganization.save();
         organization = savedOrganization._id

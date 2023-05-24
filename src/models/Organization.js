@@ -20,6 +20,10 @@ const Organization = new Schema({
   logoUrl: {
     type: String,
     required: true,
+  },
+  web: {
+    type: String,
+    required: true,
   }
 },
 {
