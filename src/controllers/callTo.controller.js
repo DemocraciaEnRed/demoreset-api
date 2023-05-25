@@ -4,7 +4,7 @@ import Users from "../models/User"
 
 export const getAllCallTo = async (req, res) => {
 
-    const allCallTo = await CallTo.find()
+    const allCallTo = await CallTo.find().populate('owner')
         .catch(err => console.log(err))
     return res.status(200).json(allCallTo);
 }
@@ -48,7 +48,7 @@ export const createCallTo = async (req, res) => {
     });
 
     newCallTo.owner = req.userId;
-    newCallTo.enabled = true;
+    newCallTo.enabled = false;
 
     if (!title) { return res.status(400).json({ message: 'Not a valid title' }) }
 

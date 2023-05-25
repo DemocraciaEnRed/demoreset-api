@@ -18,12 +18,10 @@ const CallToSchema = new mongoose.Schema({
     tags: {
         type: [String],
         required: true,
-        default: [],
     },
     types: {
         type: [String],
         required: true,
-        default: [],
     },
     location: {
         type: String,
