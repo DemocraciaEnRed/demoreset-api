@@ -33,6 +33,7 @@ const Users = new Schema({
   }],
   active: {
     type: Boolean,
+    required: true
   }
 },  
 {

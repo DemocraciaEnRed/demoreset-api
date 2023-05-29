@@ -13,7 +13,6 @@ export const signUp = async (req, res) => {
     organization,
     country,
     roles,
-    active,
   } = req.body;
 
   try {
@@ -45,7 +44,7 @@ export const signUp = async (req, res) => {
       organization,
       country,
       roles,
-      active,
+      active: true,
     });
   
     if(roles) {
