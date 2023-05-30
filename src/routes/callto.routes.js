@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllCallTo, getCallToById, createCallTo, deleteCallToById, updateCallTo } from "../controllers/callTo.controller"
+import { getAllCallTo, getCallToById, createCallTo, deleteCallToById, updateCallTo, updateCallTo2 } from "../controllers/callTo.controller"
 import { updateComment, deleteComment, newCallToComment, newLike, getLikesFromComment, getCommentById } from "../controllers/callToComments.controller";
 import { isAdmin, verifyToken } from "../middlewares/authJwt";
 import { deleteReply, newReply, updateReply } from "../controllers/replies.controller";
@@ -11,6 +11,7 @@ router.get('/', getAllCallTo)
 router.post('/', verifyToken, createCallTo)
 router.get('/:id', getCallToById)
 router.put('/:id', verifyToken, updateCallTo)
+router.patch('/:id', verifyToken, updateCallTo2)
 router.delete('/:id', [verifyToken, isAdmin], deleteCallToById)
 
 router.post('/:callId/comment', verifyToken, newCallToComment)

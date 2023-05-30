@@ -87,7 +87,7 @@ export const updateCallTo = async (req, res) => {
 
         //check admin or owner
         const admin = req.user.roles.some(role => role.name === "admin")
-        console.log(updCall);
+        // console.log(updCall);
         const owner = req.user._id.toString() === updCall.owner.toString()
         if (req.user) {
             if (!admin && !owner) {
@@ -142,6 +142,63 @@ export const updateCallTo = async (req, res) => {
                 return res.status(400).json({ message: "Call to field enabled not updated", error })
             }
         }
+    } catch (error) {
+        return res.status(500).json({ error: "Server error", error })
+    }
+}
+
+export const updateCallTo2 = async (req, res) => {
+    try {
+        let call = null;
+        try {
+            call = await CallTo.findById(req.params.id)
+        } catch (error) {
+            console.log(error)
+        }
+        if (call === null) return res.status(400).json({ message: "Call to not found" })
+
+        //check admin or owner
+        const isAdmin = req.user.roles.some(role => role.name === "admin")
+        const isOwner = req.user._id.toString() === call.owner.toString()
+        if (req.user) {
+            if (!isAdmin && !isOwner) {
+                return res.status(403).json({ message: "You are not admin or owner of the content." })
+            }
+        }
+
+        // update 'enabled' field
+        if (req.body.enabled !== undefined) {
+            if (!isAdmin) {
+                return res.status(403).json({ message: "You need to be admin to enable a call to" })
+            }
+            try {
+                const updatedCallTo = await call.updateOne({ $set: { enabled: !call.enabled } });
+                return res.status(200).json({ message: "Call to set to enabled: " + updatedCallTo });
+            } catch (error) {
+                return res.status(400).json({ message: "Call to field enabled not updated", error })
+            }
+        }
+
+        // check if the fields are different from falsy
+        const fields = Object.keys(req.body.data)
+        if (!fields || !fields.length > 0) {
+            return res.status(400).json({ message: "You should modify at least one valid field" })
+        }
+
+        for (const item in req.body.data) {
+            if (!req.body.data[item] && typeof req.body.data[item] !== 'boolean') {
+                return res.status(400).json({ message: `Field '${item}' should not be empty` })
+            }
+        }
+
+        // update every other field
+        try {
+            await call.updateOne({ $set: { ...req.body.data } })
+            return res.status(200).json({ message: "Call to updated" })
+        } catch (error) {
+            return res.status(400).json({ message: "Could not update call to" })
+        }
+
     } catch (error) {
         return res.status(500).json({ error: "Server error", error })
     }
