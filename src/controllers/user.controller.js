@@ -75,7 +75,7 @@ export const updateUser = async (req, res) => {
       user.roles = rolesFound.map(role => role._id)
       if(!rolesFound) return res.status(404).json({ message: "Roles not found" })
     }
-    const updatedUser = await user.save()
+    await user.save()
     return res.status(200).json({ message: "User updated successfully" })
   } catch (error) {
     console.error(error)

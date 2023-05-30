@@ -23,7 +23,7 @@ const Organization = new Schema({
   },
   web: {
     type: String,
-    required: true,
+    required: false,
   }
 },
 {

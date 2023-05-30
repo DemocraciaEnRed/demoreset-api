@@ -3,6 +3,7 @@ import Role from "../models/Role";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import Organization from "../models/Organization";
+import { sendEmail } from "../libs/nodemailer";
 
 export const signUp = async (req, res) => {
   let {
@@ -44,7 +45,7 @@ export const signUp = async (req, res) => {
       organization,
       country,
       roles,
-      active: true,
+      active: false,
     });
   
     if(roles) {
@@ -58,9 +59,10 @@ export const signUp = async (req, res) => {
     const savedUser = await newUser.save();
   
     const token = jwt.sign({id: savedUser._id}, process.env.JWT_SECRET, {
-      expiresIn: 60 * 60 * 24 * 30
+      expiresIn: 60 * 30
     })
   
+    sendEmail(email, token)
     res.status(200).json({ token })
   } 
   catch (error) {
@@ -77,6 +79,8 @@ export const signIn = async (req, res) => {
   const matchPassword = await User.comparePassword(req.body.password, findUser.password)
 
   if(!matchPassword) return res.status(401).json({token: null, message: "Invalid email or password"})
+
+  if(!findUser.active) return res.status(403).json({token: null, message: "Your account is not active yet"})
 
   const token = jwt.sign({id: findUser._id}, process.env.JWT_SECRET, {
     expiresIn: 60 * 60 * 24 * 30
@@ -98,4 +102,3 @@ export const signOut = async (req, res) => {
     }
   })
 }
-
