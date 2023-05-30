@@ -10,8 +10,7 @@ const router = Router();
 router.get('/', getAllCallTo)
 router.post('/', verifyToken, createCallTo)
 router.get('/:id', getCallToById)
-router.put('/:id', verifyToken, updateCallTo)
-router.patch('/:id', verifyToken, updateCallTo2)
+router.patch('/:id', verifyToken, updateCallTo)
 router.delete('/:id', [verifyToken, isAdmin], deleteCallToById)
 
 router.post('/:callId/comment', verifyToken, newCallToComment)
