@@ -10,7 +10,7 @@ export const getAllCallTo = async (req, res) => {
             select: ['email', 'organization'],
             populate: {
                 path: 'organization',
-                select: 'name'
+                select: ['name', 'logoUrl']
             }
         })
         .catch(err => console.log(err))
