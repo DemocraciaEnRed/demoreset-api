@@ -31,7 +31,13 @@ export const getCallToById = async (req, res) => {
             }, {
                 path: 'user',
                 model: 'Users'
-            }]
+            }],
+            path: 'owner',
+            model: 'Users',
+            populate: {
+                path: 'organization',
+                model: 'Organization'
+            }
         })
         .catch(err => console.log(err))
     console.log(findCallTo);
