@@ -4,7 +4,15 @@ import Users from "../models/User"
 
 export const getAllCallTo = async (req, res) => {
 
-    const allCallTo = await CallTo.find().populate('owner')
+    const allCallTo = await CallTo.find()
+        .populate({
+            path: 'owner',
+            select: ['email', 'organization'],
+            populate: {
+                path: 'organization',
+                select: 'name'
+            }
+        })
         .catch(err => console.log(err))
     return res.status(200).json(allCallTo);
 }
