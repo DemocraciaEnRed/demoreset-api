@@ -7,7 +7,7 @@ export const getAllCallTo = async (req, res) => {
     const allCallTo = await CallTo.find()
         .populate({
             path: 'owner',
-            select: ['email', 'organization'],
+            select: ['email', 'organization', 'first_name', 'last_name'],
             populate: {
                 path: 'organization',
                 select: ['name', 'logoUrl']
@@ -31,7 +31,9 @@ export const getCallToById = async (req, res) => {
             }, {
                 path: 'user',
                 model: 'Users'
-            }],
+            }]
+        })
+        .populate({
             path: 'owner',
             model: 'Users',
             populate: {
