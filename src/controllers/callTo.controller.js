@@ -26,16 +26,27 @@ export const getCallToById = async (req, res) => {
                 model: 'Reply',
                 populate: {
                     path: 'user',
-                    model: 'Users'
+                    model: 'Users',
+                    select: '-password',
+                    populate: {
+                        path: 'organization',
+                        select: 'name'
+                    }
                 }
             }, {
                 path: 'user',
-                model: 'Users'
+                model: 'Users',
+                select: '-password',
+                populate: {
+                    path: 'organization',
+                    select: 'name'
+                }
             }]
         })
         .populate({
             path: 'owner',
             model: 'Users',
+            select: '-password',
             populate: {
                 path: 'organization',
                 model: 'Organization'

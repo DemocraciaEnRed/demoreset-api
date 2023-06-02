@@ -5,20 +5,29 @@ import User from "../models/User"
 
 export const getCommentById = async (req, res) => {
     const comment = await CallToComments.findById(req.params.commentId)
-        .populate([{
-            path: 'replies',
-            model: 'Reply',
-            populate: {
+        .populate([
+            {
+                path: 'replies',
+                model: 'Reply',
+                populate: {
+                    path: 'user',
+                    select: '-password',
+                    model: 'Users',
+                    populate: {
+                        path: 'organization',
+                        select: 'name'
+                    }
+                }
+            },
+            {
                 path: 'user',
                 select: '-password',
-                model: 'Users'
-            }
-        },
-        {
-            path: 'user',
-            select: '-password',
-            model: 'Users'
-        }])
+                model: 'Users',
+                populate: {
+                    path: 'organization',
+                    select: 'name'
+                }
+            }])
         .catch(err => {
             console.log(err)
             return res.status(404).json({ message: 'Comment not found' })
