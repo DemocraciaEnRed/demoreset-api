@@ -7,19 +7,19 @@ const Organization = new Schema({
   },
   name: {
     type: String,
-    required: true,
+    required: false,
   },
   country_en: {
     type: String,
-    required: true,
+    required: false,
   },
   country_es: {
     type: String,
-    required: true,
+    required: false,
   },
   logoUrl: {
     type: String,
-    required: true,
+    required: false,
   },
   web: {
     type: String,
