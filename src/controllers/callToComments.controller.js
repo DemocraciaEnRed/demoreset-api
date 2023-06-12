@@ -29,7 +29,7 @@ export const getCommentById = async (req, res) => {
                 }
             }])
         .catch(err => {
-            console.log(err)
+            console.error(err)
             return res.status(404).json({ message: 'Comment not found' })
         })
 
@@ -55,13 +55,13 @@ export const newCallToComment = async (req, res) => {
         })
         // save the comment
         const savedComment = await newComment.save()
-            .catch(err => console.log(err))
+            .catch(err => console.error(err))
 
         // add the comment to the callTo
         callTo.comments.push(savedComment._id)
 
         const updatedCallTo = await callTo.save()
-            .catch(err => console.log(err))
+            .catch(err => console.error(err))
 
         return res.status(200).json({ UPDATED_CALL_TO: updatedCallTo, NEW_COMMENT: savedComment })
     }
@@ -163,7 +163,6 @@ export const deleteComment = async (req, res) => {
         if (commentCallTo.replies.length > 0) {
             commentCallTo.replies.forEach(async reply => {
                 const deletedReply = await Reply.findByIdAndDelete(reply._id)
-                console.log(deletedReply)
             })
         }
 

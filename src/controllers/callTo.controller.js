@@ -13,7 +13,7 @@ export const getAllCallTo = async (req, res) => {
                 select: ['name', 'logoUrl']
             }
         })
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
     return res.status(200).json(allCallTo);
 }
 
@@ -53,12 +53,11 @@ export const getCallToById = async (req, res) => {
             }
         })
         .catch(err => console.log(err))
-    console.log(findCallTo);
+
     return res.status(200).json(findCallTo);
 }
 
 export const createCallTo = async (req, res) => {
-
     const { owner, enabled, title, tags, types, location, endDate, about, content, country } = req.body;
 
     const newCallTo = new CallTo({
@@ -80,7 +79,7 @@ export const createCallTo = async (req, res) => {
     if (!title) { return res.status(400).json({ message: 'Not a valid title' }) }
 
     const titleExists = await CallTo.findOne({ title: req.body.title })
-        .catch(err => console.log(err));
+        .catch(err => console.error(err));
 
     if (titleExists) {
         return res.status(400).json({ message: "Your call title is already in use" })
@@ -88,7 +87,7 @@ export const createCallTo = async (req, res) => {
 
     const savedCallTo = await newCallTo.save()
         .catch((err) => {
-            console.log(err)
+            console.error(err)
             res.status(400).json({ error: err })
         });
 
@@ -97,7 +96,7 @@ export const createCallTo = async (req, res) => {
 
 export const deleteCallToById = async (req, res) => {
     const findCallTo = await CallTo.findByIdAndDelete(req.params.id)
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
     if (!findCallTo) return res.status(400).json({ message: "Call to not found" })
     return res.status(202).json({ message: "Call to deleted successfully" });
 }
@@ -108,7 +107,7 @@ export const updateCallTo = async (req, res) => {
         try {
             call = await CallTo.findById(req.params.id)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
         if (call === null) return res.status(400).json({ message: "Call to not found" })
 
@@ -135,26 +134,26 @@ export const updateCallTo = async (req, res) => {
         }
 
         // check if the fields are different from falsy
-        const fields = Object.keys(req.body.data)
+        const fields = Object.keys(req.body)
         if (!fields || !fields.length > 0) {
             return res.status(400).json({ message: "You should modify at least one valid field" })
         }
 
-        for (const item in req.body.data) {
-            if (!req.body.data[item] && typeof req.body.data[item] !== 'boolean') {
+        for (const item in req.body) {
+            if (!req.body[item] && typeof req.body[item] !== 'boolean') {
                 return res.status(400).json({ message: `Field '${item}' should not be empty` })
             }
         }
-
         // update every other field
         try {
-            await call.updateOne({ $set: { ...req.body.data } })
+            await call.updateOne({ $set: { ...req.body } })
             return res.status(200).json({ message: "Call to updated" })
         } catch (error) {
             return res.status(400).json({ message: "Could not update call to" })
         }
 
     } catch (error) {
-        return res.status(500).json({ error: "Server error", error })
+        console.error(error);
+        return res.status(500).json({ error: "Server error: "+error })
     }
 }

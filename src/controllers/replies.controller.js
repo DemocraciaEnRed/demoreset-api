@@ -25,12 +25,12 @@ export const newReply = async (req, res) => {
 
     // save the reply
     const savedReply = await newReply.save()
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 
     // add the reply to the comment
     commentCallTo.replies.push(savedReply._id)
     const updatedComment = await commentCallTo.save()
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 
     return res.status(200).json({ UPDATED_CALLTO_COMMENTS_REPLY: updatedComment.replies, NEW_REPLY: savedReply })
 }
@@ -44,7 +44,7 @@ export const updateReply = async (req, res) => {
 
     // check if reply exists
     const replyCallTo = await Reply.findById(replyId)
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
 
     if (!replyCallTo) { return res.status(404).json({ error: 'Reply not found' }) }
 
@@ -71,7 +71,7 @@ export const updateReply = async (req, res) => {
         const updatedReply = await replyCallTo.save()
         return res.status(200).json({ message: 'reply ', NEW_REPLY: updatedReply })
     } catch (error) {
-        err => console.log(err)
+        err => console.error(err)
         return res.status(500).json({ message: 'Error updating reply' })
     }
 
@@ -82,7 +82,7 @@ export const deleteReply = async (req, res) => {
 
     // check if reply exists
     const replyCallTo = await Reply.findById(replyId)
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
     if (!replyCallTo) { return res.status(404).json({ error: 'Reply not found' }) }
 
     //check user permissions
@@ -129,7 +129,7 @@ export const deleteReply = async (req, res) => {
             res.status(500).json({ error, message: 'could not delete reply' })
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ error, message: 'could not delete reply from comments' })
     }
 
