@@ -1,15 +1,22 @@
-FROM node:alpine
+FROM node:14
 
-WORKDIR /usr/src/app
+# Set the working directory inside the container
+WORKDIR /usr/demoreset-api
 
-RUN npm install -g nodemon
+# Install Babel and necessary presets and plugins
+RUN npm install --save-dev @babel/core @babel/cli @babel/preset-env
 
-COPY package*.json ./
+# Transpile the application code
+RUN npx babel . --out-dir dist --ignore node_modules
 
-RUN npm install
-
+# Copy the application source code to the container
 COPY . .
 
+# Install production dependencies
+RUN npm install --production
+
+# Expose a port if your application listens on a specific port
 EXPOSE 4000
 
-CMD [ "npm", "start"]
+# Define the command to run your application
+CMD [ "node", "dist/index.js" ]

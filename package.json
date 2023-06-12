@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "name": "demoreset-backend",
   "version": "1.0.0",
   "description": "Backend for DemoReset",
@@ -8,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js --exec babel-node",
-    "build": "babel src --out-dir build"
+    "build": "babel . --out-dir build --ignore node_modules"
   },
   "author": "Democracia en Red",
   "license": "ISC",
