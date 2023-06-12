@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const Users = new Schema({
   email: {
     type: String,
-    unique: true,
+    unique: false,
     required: true
   },
   first_name: {
@@ -20,8 +20,8 @@ const Users = new Schema({
     required: true
   },
   organization: {
-    type: String,
-    required: true
+    type: Schema.Types.ObjectId,
+    ref: "Organization"
   },
   country: {
     type: String,
@@ -33,6 +33,7 @@ const Users = new Schema({
   }],
   active: {
     type: Boolean,
+    required: true
   }
 },  
 {

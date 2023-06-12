@@ -2,26 +2,34 @@ import { Schema, model } from 'mongoose';
 
 const Organization = new Schema({
   directusId: {
-    type: String,
+    type: Number,
     required: true,
   },
-  name_es: {
+  name: {
     type: String,
-    required: true,
+    required: false,
   },
-  name_en: {
+  country_en: {
     type: String,
-    required: true,
+    required: false,
   },
-  hub: {
+  country_es: {
     type: String,
     required: false,
   },
   logoUrl: {
     type: String,
     required: false,
-    default: null,
+  },
+  web: {
+    type: String,
+    required: false,
   }
+},
+{
+  timestamps: true,
+  versionKey: false
 })
+
 
 export default model('Organization', Organization)
