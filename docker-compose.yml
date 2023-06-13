@@ -1,5 +1,4 @@
-version: '3'
-
+version: '2'
 services:
   mongo:
     image: mongo:3.6
@@ -10,13 +9,12 @@ services:
 
   api:
     build: .
-    image: ghcr.io/democraciaenred/demoreset-api:latest
-    # volumes: 
-    #   - .:/usr/src/app
-    env_file: .env
+    image: demoreset-api:latest
+    env_file:
+      - .env
     ports:
       - "4000:4000"
     depends_on:
       - mongo
     links:
-      - mongo:27017
+      - mongo
