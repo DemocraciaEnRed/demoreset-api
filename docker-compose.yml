@@ -1,13 +1,14 @@
-version: '3'
+version: '2'
 services:
   mongo:
-    image: mongo:3.6.23
+    image: mongo:3.6
     ports:
       - 27017:27017
     volumes:
       - ./tmp/db:/data/db  
 
   api:
+    build: .
     image: demoreset-api:latest
     env_file:
       - .env
@@ -16,4 +17,4 @@ services:
     depends_on:
       - mongo
     links:
-      - mongo:27017
+      - mongo

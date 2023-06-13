@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:16-alpine
 
 WORKDIR /usr/src/app
 
@@ -6,8 +6,10 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY build/ .
+COPY . .
+
+RUN npm run build
 
 EXPOSE 4000
 
-CMD [ "node", "index.js" ]
+CMD [ "npm", "start" ]
