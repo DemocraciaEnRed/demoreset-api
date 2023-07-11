@@ -7,7 +7,7 @@ export const newReply = async (req, res) => {
     const { content } = req.body
     // check if the content is empty
     if (content === "") { return res.status(400).json({ error: 'Empty content' }) }
-     
+
     // check that CallTo exists
     const callTo = await CallTo.findById(callId)
     if (!callTo) { return res.status(404).json({ error: 'CallTo not found' }) }
@@ -28,9 +28,12 @@ export const newReply = async (req, res) => {
         .catch(err => console.error(err))
 
     // add the reply to the comment
+    console.log(commentCallTo.updatedAt);
     commentCallTo.replies.push(savedReply._id)
-    const updatedComment = await commentCallTo.save()
+    const updatedComment = await commentCallTo.save({ timestamps: { createdAt: true, updatedAt: false } })
         .catch(err => console.error(err))
+
+    console.log(updatedComment.updatedAt);
 
     return res.status(200).json({ UPDATED_CALLTO_COMMENTS_REPLY: updatedComment.replies, NEW_REPLY: savedReply })
 }
@@ -119,7 +122,7 @@ export const deleteReply = async (req, res) => {
     try {
         // overwrite replies array in comment
         if (replyIdx > -1) { commentCallTo.replies.splice(replyIdx, 1) }
-        await commentCallTo.save()
+        await commentCallTo.save({ timestamps: { createdAt: true, updatedAt: false } })
         try {
             //delete reply itself
             const deletedReply = await Reply.findByIdAndRemove(replyCallTo._id)
