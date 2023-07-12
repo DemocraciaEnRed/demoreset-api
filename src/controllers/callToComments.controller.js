@@ -126,11 +126,11 @@ export const newLike = async (req, res) => {
             // remove the like
             const index = commentCallTo.likes.indexOf(user._id)
             if (index > -1) { commentCallTo.likes.splice(index, 1) }
-            const savedComment = await commentCallTo.save()
+            const savedComment = await commentCallTo.save({ timestamps: { createdAt: true, updatedAt: false } })
             return res.status(200).json({ message: "like removed", UPDATED_CALLTO_COMMENTS: savedComment })
         }
         commentCallTo.likes.push(user._id)
-        const savedComment = await commentCallTo.save()
+        const savedComment = await commentCallTo.save({ timestamps: { createdAt: true, updatedAt: false } })
         return res.status(200).json({ message: "like added", UPDATED_CALLTO_COMMENTS: savedComment })
     }
     catch (error) {
