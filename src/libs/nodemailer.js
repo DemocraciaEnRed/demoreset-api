@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv'
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  host: process.env.NODEMAIKER_HOST,
+  host: process.env.NODEMAILER_HOST,
   port: process.env.NODEMAILER_PORT,
   secure: process.env.NODEMAILER_SECURE,
   auth: {
