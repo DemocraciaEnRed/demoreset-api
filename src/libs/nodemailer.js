@@ -17,7 +17,10 @@ const transporter = nodemailer.createTransport({
 
 export const sendEmail = (email, token) => {
   const mailData = {
-    from: process.env.NODEMAILER_EMAIL,
+    from: {
+      name: 'DemoReset',
+      address: process.env.NODEMAILER_EMAIL
+    },
     to: email,
     subject: 'Account Validation Required - DemoReset',
     // place url of the organization for the image
@@ -43,7 +46,10 @@ export const sendEmail = (email, token) => {
 
 export const sendEmailRecoveryPassword = (email, token, first_name, last_name) => {
   const mailData = {
-    from: process.env.NODEMAILER_EMAIL,
+    from: {
+      name: 'DemoReset',
+      address: process.env.NODEMAILER_EMAIL
+    },
     to: email,
     subject: 'Recover Password - DemoReset',
     html: `<center><img src="${process.env.MAILS_LOGO}"></img></center> <br>
@@ -70,7 +76,10 @@ export const sendEmailRecoveryPassword = (email, token, first_name, last_name) =
 
 export const sendEmailPasswordChanged = (email, first_name, last_name) => {
   const mailData = {
-    from: process.env.NODEMAILER_EMAIL,
+    from: {
+      name: 'DemoReset',
+      address: process.env.NODEMAILER_EMAIL
+    },
     to: email,
     subject: 'Password Changed - DemoReset',
     html: `<center><img src="${process.env.MAILS_LOGO}"></img></center> <br>
